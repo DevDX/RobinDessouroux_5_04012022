@@ -126,7 +126,7 @@ function addElement (data)
 	let wSelect = document.querySelector("#colors");
 
 	/* 2. renseignement selon  API */ 
-	feedNewTag(data);	
+	feedNewTag(newImg,wTitle,wDescription,wPrice,data);	
 
 	/* 3. cas particulier: les couleurs */
 	/*https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Array
@@ -147,22 +147,22 @@ function addElement (data)
 	/* 4. mise-à-jour de la page */
 	wPicture.appendChild(newImg);
 		
-	return;
+	// return;
 
 
-	function feedNewTag(data)
-	{
-		newImg.src = data.imageUrl;console.log("newImg.src =  " +newImg.src);
-		newImg.alt = data.altTxt;console.log("newImg.alt =  " +newImg.alt);
-		WimgsrcA = newImg.src;
-		WimgaltA = newImg.alt;
-		wTitle.innerHTML = data.name; console.log("wTitle.innerHTML =  " +wTitle.innerHTML);
-		wDescription.innerHTML = data.description; console.log("wDescription.innerHTML  =  " +wDescription.innerHTML );
-		wPrice.innerHTML = data.price; console.log("price  =  " +wPrice.innerHTML );
+	// function feedNewTag(data)
+	// {
+	// 	newImg.src = data.imageUrl;console.log("newImg.src =  " +newImg.src);
+	// 	newImg.alt = data.altTxt;console.log("newImg.alt =  " +newImg.alt);
+	// 	WimgsrcA = newImg.src;
+	// 	WimgaltA = newImg.alt;
+	// 	wTitle.innerHTML = data.name; console.log("wTitle.innerHTML =  " +wTitle.innerHTML);
+	// 	wDescription.innerHTML = data.description; console.log("wDescription.innerHTML  =  " +wDescription.innerHTML );
+	// 	wPrice.innerHTML = data.price; console.log("price  =  " +wPrice.innerHTML );
 
-		return;
+	// 	return;
 
-	}
+	// }
 					
 }	
 
@@ -179,7 +179,7 @@ function loadFromLocalStorage(returnObjName)
 	imgsrcA=returnObjName.imgsrcA;
 	imgaltA=returnObjName.imgaltA;
 				
-	return;
+	// return;
 
 }
 
@@ -204,7 +204,7 @@ function loadToLocalStorage()
 	localStorage.clear();// rdx 30/12/2021
 	localStorage.setItem("WachatA",WachatA);// à vérifier RDX
 
-	return;
+	// return;
 }
 
 function addInArrays(Wkey)
@@ -219,5 +219,19 @@ function addInArrays(Wkey)
 	imgsrcA.push(WimgsrcA);
 	imgaltA.push(WimgaltA);
 
-	return;
+	// return;
+}
+
+function feedNewTag(newImg,wTitle,wDescription,wPrice,data)
+{
+	newImg.src = data.imageUrl;console.log("newImg.src =  " +newImg.src);
+	newImg.alt = data.altTxt;console.log("newImg.alt =  " +newImg.alt);
+	WimgsrcA = newImg.src;
+	WimgaltA = newImg.alt;
+	wTitle.innerHTML = data.name; console.log("wTitle.innerHTML =  " +wTitle.innerHTML);
+	wDescription.innerHTML = data.description; console.log("wDescription.innerHTML  =  " +wDescription.innerHTML );
+	wPrice.innerHTML = data.price; console.log("price  =  " +wPrice.innerHTML );
+
+	return newImg,wTitle,wDescription,wPrice,data;
+
 }

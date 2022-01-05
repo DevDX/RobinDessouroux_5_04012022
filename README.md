@@ -16,5 +16,5 @@ console when the server starts, e.g. `Listening on port 3001`.
 
 From the local terminal:
 cd p5-dev-web-kanap
-cd back
+cd back 
 node server.js

@@ -48,46 +48,45 @@ function addElement (data)
 	newP.innerHTML = data.description; console.log("newP.innerHTML  =  " +newP.innerHTML);
 
 	/* 3. ajout des classes  */
-	updClass();
-		
+	newH3=updClass(newH3,"productName");
+	newP=updClass(newP,"productDescription");	
+	
+	
 	/* 4. mise à jour de la page */
-	addChildren();
-	
-	return;
+	// ajout de <a> dans <section id="items">    
+	document.getElementById("items").appendChild(newA);
+	// // article est dans <a>
+	// newA.appendChild(newArticle);
+	// // <article> contient les autres
+	// newArticle.appendChild(newImg);
+	// newArticle.appendChild(newH3);
+	// newArticle.appendChild(newP);	
+	addChildren(newA,newArticle);
+	addChildren(newArticle,newImg);
+	addChildren(newArticle,newH3);
+	addChildren(newArticle,newP);	
+
+}	
 
 
+function updClass(element,className)
+{
+	/* utiliser l'API classList pour supprimer et ajouter des classes
+	https://developer.mozilla.org/fr/docs/Web/API/Element/classList	
+	const div = document.createElement('div');
+	div.classList.add("anotherclass")*/ 
+	element.classList.add(className);//console.log("newH3.class =  " +newH3.className);
 
-	function updClass()
-	{
-		/* utiliser l'API classList pour supprimer et ajouter des classes
-		https://developer.mozilla.org/fr/docs/Web/API/Element/classList	
-		const div = document.createElement('div');
-		div.className = 'foo';							
-		div.classList.remove("foo");
-		div.classList.add("anotherclass")*/ 
-		newH3.classList.add("productName");console.log("newH3.class =  " +newH3.className);
-		newP.classList.add("productDescription");console.log("newP.class =  " +newP.className);
+	return element;
 
-		return;
-
-	}
-	
-
-	function addChildren()
-	{
-
-		// ajout de <a> dans <section id="items">    
-		document.getElementById("items").appendChild(newA);
-		// article est dans <a>
-		newA.appendChild(newArticle);
-		// <article> contient les autres
-		newArticle.appendChild(newImg);
-		newArticle.appendChild(newH3);
-		newArticle.appendChild(newP);
-		
-		return;
-
-	}
-					
 }
 
+// ajout de la balise enfant à son parent
+function addChildren(pParent,pChild)
+	{
+
+		pParent.appendChild(pChild);	
+		
+		return pParent,pChild;
+
+	}
