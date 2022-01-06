@@ -122,6 +122,7 @@ evtAddOrder.addEventListener("click", () =>
 	document.getElementById("lastNameErrorMsg").innerHTML = "";// faire une fonction
 	document.getElementById("addressErrorMsg").innerHTML = "";// faire une fonction
 	document.getElementById("cityErrorMsg").innerHTML = "";// faire une fonction
+	document.getElementById("emailErrorMsg").innerHTML = "";// faire une fonction
 		
 	event.preventDefault();
 	alert("commande détectée");	
@@ -138,7 +139,8 @@ evtAddOrder.addEventListener("click", () =>
 		sndMsg="Le prénom est incomplet";
 		sndErrMsg(sndId,sndMsg);
 	}
-	if(! wPrenom.match(/^([a-zA-Z ]+)$/)) //le prénom ne doit contenir que des lettres
+	// if(! wPrenom.match(/^([a-zA-Z ]+)$/)) //le prénom ne doit contenir que des lettres
+	if(! wPrenom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le prénom ne doit contenir que des lettres
 	{
 		alert("prénom invalide");
 		sndId="firstNameErrorMsg";
@@ -155,7 +157,8 @@ evtAddOrder.addEventListener("click", () =>
 		sndMsg="Le nom est incomplet";
 		sndErrMsg(sndId,sndMsg);
 	}
-	if(! wNom.match(/^([a-zA-Z ]+)$/)) //le nom ne doit contenir que des lettres
+	// if(! wNom.match(/^([a-zA-Z ]+)$/)) //le nom ne doit contenir que des lettres
+	if(! wNom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le nom ne doit contenir que des lettres
 	{
 		alert("nom invalide");
 		sndId="lastNameErrorMsg";
@@ -202,6 +205,25 @@ evtAddOrder.addEventListener("click", () =>
 		alert("nom de ville invalide");
 		sndId="cityErrorMsg";
 		sndMsg="nom de ville invalide";
+		sndErrMsg(sndId,sndMsg);
+	}
+
+	/* le mail */
+	// (/^([w-.]+)@((?:[w]+.)+)([a-zA-Z]{2,4})/i)
+	let wEmail = document.getElementById("email").value;console.log("le mail est : "+wEmail);
+	if (wEmail.length <= 1) //longueur du nom
+	{
+		alert("email trop court");
+		sndId="emailErrorMsg";
+		sndMsg="L'email est erroné";
+		sndErrMsg(sndId,sndMsg);
+	}
+	// validité de l'email
+	if(! wEmail.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) //à vérifier 
+	{
+		alert("email invalide");
+		sndId="emailErrorMsg";
+		sndMsg="email invalide";
 		sndErrMsg(sndId,sndMsg);
 	}
 
@@ -413,7 +435,7 @@ function loadToLocalStorage()
 	/*let objLinea = JSON.stringify(objJson);
 	localStorage.setItem("obj",objLinea);*/
 	let WachatA = JSON.stringify(Wachat);
-	localStorage.clear();// rdx 30/12/2021
+	localStorage.clear();// rdx 30/12/2021 ou storage.removeItem(WachatA);
 	localStorage.setItem("WachatA",WachatA);// à vérifier RDX
 
 	// return;

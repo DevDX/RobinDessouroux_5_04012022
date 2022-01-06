@@ -201,7 +201,7 @@ function loadToLocalStorage()
 	/*let objLinea = JSON.stringify(objJson);
 	localStorage.setItem("obj",objLinea);*/
 	let WachatA = JSON.stringify(Wachat);
-	localStorage.clear();// rdx 30/12/2021
+	localStorage.clear();// rdx 30/12/2021 ou storage.removeItem(WachatA);
 	localStorage.setItem("WachatA",WachatA);// à vérifier RDX
 
 	// return;
