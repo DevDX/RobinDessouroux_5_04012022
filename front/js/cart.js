@@ -54,18 +54,27 @@ for (let Wmodif of Wmodifs)
 	Wmodif.addEventListener('change', function()
 	{
 		let newQt = this.value;//nouvelle quantité affichée à l'écran 
-		let reslt = Wmodif.closest("article");// recherche de l'article qui contient les identifiants
-		let wCheck=reslt.id+reslt.color;	console.log("modif détectée : "+wCheck);//alert("modif détectée " +wCheck);	alert("nouvelle quantité " +newQt); 
 		
-		iA = keyA.indexOf(wCheck);	console.log("iA "+iA);
-		qtyA[iA] = parseInt(newQt); console.log("qtyA après  "+qtyA[iA]);
-		
-		/* Stockage des données dans le localstorage */
-		loadToLocalStorage();
-		
-		//msg pour dire que c'est ajouté au panier 
-		alert("Cette modification a bien été ajoutée à votre panier.")
-		document.location.href="./cart.html";// refresh de la page
+		//la quantité doit être positive ou 0
+		if (newQt >= 0)
+		{ 
+			let reslt = Wmodif.closest("article");// recherche de l'article qui contient les identifiants
+			let wCheck=reslt.id+reslt.color;	console.log("modif détectée : "+wCheck);//alert("modif détectée " +wCheck);	alert("nouvelle quantité " +newQt); 
+			
+			iA = keyA.indexOf(wCheck);	console.log("iA "+iA);
+			qtyA[iA] = parseInt(newQt); console.log("qtyA après  "+qtyA[iA]);
+			
+			/* Stockage des données dans le localstorage */
+			loadToLocalStorage();
+			
+			//msg pour dire que c'est ajouté au panier 
+			alert("Cette modification a bien été ajoutée à votre panier.")
+			document.location.href="./cart.html";// refresh de la page
+		}
+		else
+		{
+			alert("Quantité invalide. Veuillez corriger. Une quantité ne peut pas être infèrieure à 0.")	;
+		}
 	});
 }
 
@@ -96,6 +105,109 @@ for (let Wdel of Wdelete)
 		
 	});
 }
+
+
+//listener se déclenchant sur le clic du bouton commander
+/*https://developer.mozilla.org/fr/docs/Web/API/EventTarget/addEventListener
+// Ajouter un écouteur d'évènements à la table avec une fonction fléchée
+const el = document.querySelector("#outside");
+el.addEventListener("click", () => {
+  modifyText("quatre");
+}, false);*/
+const evtAddOrder = document.querySelector("#order"); //listener se déclenchant sur le clic du bouton "commander"
+evtAddOrder.addEventListener("click", () => 
+{
+	// iniErrMsg
+	document.getElementById("firstNameErrorMsg").innerHTML = "";// faire une fonction
+	document.getElementById("lastNameErrorMsg").innerHTML = "";// faire une fonction
+	document.getElementById("addressErrorMsg").innerHTML = "";// faire une fonction
+	document.getElementById("cityErrorMsg").innerHTML = "";// faire une fonction
+		
+	event.preventDefault();
+	alert("commande détectée");	
+
+
+	//test formulaire 
+
+	/* le prénom */
+	let wPrenom = document.getElementById("firstName").value;console.log("le prénom est : "+wPrenom);
+	if (wPrenom.length <= 1) //longueur du prénom
+	{
+		alert("prénom trop court");
+		sndId="firstNameErrorMsg";
+		sndMsg="Le prénom est incomplet";
+		sndErrMsg(sndId,sndMsg);
+	}
+	if(! wPrenom.match(/^([a-zA-Z ]+)$/)) //le prénom ne doit contenir que des lettres
+	{
+		alert("prénom invalide");
+		sndId="firstNameErrorMsg";
+		sndMsg="prénom invalide";
+		sndErrMsg(sndId,sndMsg);
+	}
+
+    /* le nom */
+	let wNom = document.getElementById("lastName").value;console.log("le nom est : "+wNom);
+	if (wNom.length <= 1) //longueur du nom
+	{
+		alert("nom trop court");
+		sndId="lastNameErrorMsg";
+		sndMsg="Le nom est incomplet";
+		sndErrMsg(sndId,sndMsg);
+	}
+	if(! wNom.match(/^([a-zA-Z ]+)$/)) //le nom ne doit contenir que des lettres
+	{
+		alert("nom invalide");
+		sndId="lastNameErrorMsg";
+		sndMsg="nom invalide";
+		sndErrMsg(sndId,sndMsg);
+	}
+
+	/* l'adresse */
+	let wAdresse = document.getElementById("address").value;console.log("adresse est : "+wAdresse);
+	//^[a-zA-Z0-9\s,'-]*$
+	// ou /^[a-zA-Z0-9\s,.'-]{3,}$/ 
+	// ou /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæ?ÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝ?Æ?._\s-]{5,60}$/ 
+	if (wAdresse.length <= 1) //longueur de l'adresse
+	{
+		alert("nom trop court");
+		sndId="addressErrorMsg";
+		sndMsg="L'adresse est incomplète";
+		sndErrMsg(sndId,sndMsg);
+	}
+	if(! wAdresse.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
+	{
+		alert("adresse invalide");
+		sndId="addressErrorMsg";
+		sndMsg="adresse invalide";
+		sndErrMsg(sndId,sndMsg);
+	}
+
+	/* la ville */
+	let wVille = document.getElementById("city").value;console.log("ville est : "+wVille);
+	///^([a-zA-Z ]+)$/
+	//ou 
+	//^[a-zA-Z0-9\s,'-]*$
+	// ou /^[a-zA-Z0-9\s,.'-]{3,}$/ 
+	// ou /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæ?ÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝ?Æ?._\s-]{5,60}$/ 
+	if (wVille.length <= 1) //longueur de ville
+	{
+		alert("nom de ville trop court");
+		sndId="cityErrorMsg";
+		sndMsg="Le nom de la ville est incomplet";
+		sndErrMsg(sndId,sndMsg);
+	}
+	if(! wVille.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
+	{
+		alert("nom de ville invalide");
+		sndId="cityErrorMsg";
+		sndMsg="nom de ville invalide";
+		sndErrMsg(sndId,sndMsg);
+	}
+
+});
+
+
 
 
 function addElement(readingIndex)
@@ -369,4 +481,14 @@ function addChildren(pParent,pChild)
 
 	return element;
 
+}
+
+
+function sndErrMsg(sndId,sndMsg) 
+{
+	// var ErrElt = document.querySelector(sndId);
+  
+	// ErrElt.innerHTML = sndMsg;
+	document.getElementById(sndId).innerHTML = sndMsg;
+	return sndId,sndMsg;
 }
