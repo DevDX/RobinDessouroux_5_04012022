@@ -1,12 +1,13 @@
-//initialisation des variables globales 
-let WtotalQty = 0;	//variables globale pour cumul quantité
-let WtotalAmount = 0;	//variables globale pour cumul quantité
+//initialisation des variables globales pour cumuls
+let WtotalQty = 0;
+let WtotalAmount = 0;	
 
+/*  déclaration des variables globales à cette page */
 let WimgsrcA = "vide"; //chemin de l'image
 let	WimgaltA = "vide"; //texte alternatif de l'image
 
 // initialisation des tableaux afin de stocker les données 
-let keyA = [];//clé identifiant unique
+let keyA = [];
 let idA = [];
 let colorA = [];
 let qtyA = []; 
@@ -17,7 +18,9 @@ let	imgaltA = [];
 let iA = 0; //index tableau
 
 
-// test : boucle de traitement ou vide ?
+
+
+// test : boucle de traitement ou vide ? //https://qastack.fr/programming/3262605/how-to-check-whether-a-storage-item-is-set
 let returnObjName= JSON.parse(localStorage.getItem('WachatA'));
 if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le local storage
 { 	
@@ -29,6 +32,7 @@ if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le 
 	}
 
 	/* après la boucle: affichage de la quantité et du montant */
+	// <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice"><!-- 84,00 --></span> €</p>
 	let wtotalQuantity = document.querySelector("#totalQuantity");
 	wtotalQuantity.innerHTML = WtotalQty;
 	let wtotalPrice = document.querySelector("#totalPrice");
@@ -37,27 +41,34 @@ if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le 
 }
 else //Rien dans local storage
 {	
-	alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");//console.log("localStorage est vide.");
+	console.log("localStorage est vide.");
+	alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");
 }
   
 
-/* boucle sur <input> selon le listener */ 
+
+/* boucle sur <input> selon le listener */ // window.addEventListener('change', function () 
 let Wmodifs = document.getElementsByName("itemQuantity");//nom de la balise <input>
 for (let Wmodif of Wmodifs) 
 {
-	Wmodif.addEventListener('change', function() //change de la quantité
+	Wmodif.addEventListener('change', function()
 	{
 		let newQt = this.value;//nouvelle quantité affichée à l'écran 
-		if (newQt >= 0)	//la quantité doit être positive ou 0
+		
+		//la quantité doit être positive ou 0
+		if (newQt >= 0)
 		{ 
 			let reslt = Wmodif.closest("article");// recherche de l'article qui contient les identifiants
-			let wCheck=reslt.id+reslt.color; //constitution de l'identifiant unique	//console.log("modif détectée : "+wCheck);//alert("modif détectée " +wCheck);	alert("nouvelle quantité " +newQt); 
+			let wCheck=reslt.id+reslt.color;	console.log("modif détectée : "+wCheck);//alert("modif détectée " +wCheck);	alert("nouvelle quantité " +newQt); 
 			
-			iA = keyA.indexOf(wCheck);	//récupération de l'index de la clé unique //console.log("iA "+iA);
-			qtyA[iA] = parseInt(newQt); //mise-à-jour de la quantité //console.log("qtyA après  "+qtyA[iA]);
+			iA = keyA.indexOf(wCheck);	console.log("iA "+iA);
+			qtyA[iA] = parseInt(newQt); console.log("qtyA après  "+qtyA[iA]);
 			
-			loadToLocalStorage(); /* Stockage des données dans le localstorage */
-			alert("Cette modification a bien été ajoutée à votre panier.") //msg pour dire que c'est ajouté au panier 
+			/* Stockage des données dans le localstorage */
+			loadToLocalStorage();
+			
+			//msg pour dire que c'est ajouté au panier 
+			alert("Cette modification a bien été ajoutée à votre panier.")
 			document.location.href="./cart.html";// refresh de la page
 		}
 		else
@@ -68,55 +79,72 @@ for (let Wmodif of Wmodifs)
 }
 
 
+
 /* boucle sur <p> dont la class="deleteItem" selon le listener */ 
 let Wdelete = document.querySelectorAll(".deleteItem");//nom de la classe de <p>
 for (let Wdel of Wdelete) 
 {
-	Wdel.addEventListener('click', function()	//clic sur supprimer
+	Wdel.addEventListener('click', function()
 	{
+		//let newQt = this.value;//nouvelle quantité affichée à l'écran 
 		let reslt = Wdel.closest("article");// recherche de l'article qui contient les identifiants
-		let wCheck=reslt.id+reslt.color;	//constitution de la clé unique //console.log("supression détectée : "+wCheck);//alert("modif détectée " +wCheck);	alert("nouvelle quantité " +newQt); 
+		let wCheck=reslt.id+reslt.color;	console.log("supression détectée : "+wCheck);//alert("modif détectée " +wCheck);	alert("nouvelle quantité " +newQt); 
 		
-		iA = keyA.indexOf(wCheck);	console.log("iA "+iA);//récupération de l'index de l'élément sélectionné
-		deleteElement(iA);//suppression de l'élément sélectionné dans les tableaux
+		//récupération de l'index de l'élément sélectionné
+		iA = keyA.indexOf(wCheck);	console.log("iA "+iA);
+
+		//suppression de l'élément sélectionné dans les tableaux
+		deleteElement(iA);
+
+		/* Stockage des données dans le localstorage */
+		loadToLocalStorage();
 		
-		loadToLocalStorage();/* Stockage des données dans le localstorage */
-		alert("Cet achat a bien été retiré de votre panier.")//msg pour dire que c'est retiré du panier 
-		document.location.href="./cart.html";// refresh de la page		
+		//msg pour dire que c'est retiré du panier 
+		alert("Cet achat a bien été retiré de votre panier.")
+		document.location.href="./cart.html";// refresh de la page
+		
 	});
 }
 
 
 //listener se déclenchant sur le clic du bouton commander
-const evtAddOrder = document.querySelector("#order");  
-evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le clic du bouton "commander"
+/*https://developer.mozilla.org/fr/docs/Web/API/EventTarget/addEventListener
+// Ajouter un écouteur d'évènements à la table avec une fonction fléchée
+const el = document.querySelector("#outside");
+el.addEventListener("click", () => {
+  modifyText("quatre");
+}, false);*/
+const evtAddOrder = document.querySelector("#order"); //listener se déclenchant sur le clic du bouton "commander"
+evtAddOrder.addEventListener("click", () => 
 {
-	event.preventDefault(); //	alert("commande détectée");	
 	// iniErrMsg
 	document.getElementById("firstNameErrorMsg").innerHTML = "";// faire une fonction
 	document.getElementById("lastNameErrorMsg").innerHTML = "";// faire une fonction
 	document.getElementById("addressErrorMsg").innerHTML = "";// faire une fonction
 	document.getElementById("cityErrorMsg").innerHTML = "";// faire une fonction
 	document.getElementById("emailErrorMsg").innerHTML = "";// faire une fonction
-	let indErr="0";	//indicateur erreur détectée <=> 0=pas d'erreur	
+		
+	event.preventDefault();
+	alert("commande détectée");	
 
-	//test du formulaire 
+
+	//test formulaire 
+
 	/* le prénom */
 	let wPrenom = document.getElementById("firstName").value;console.log("le prénom est : "+wPrenom);
 	if (wPrenom.length <= 1) //longueur du prénom
-	{		
+	{
 		alert("prénom trop court");
 		sndId="firstNameErrorMsg";
 		sndMsg="Le prénom est incomplet";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
+	// if(! wPrenom.match(/^([a-zA-Z ]+)$/)) //le prénom ne doit contenir que des lettres
 	if(! wPrenom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le prénom ne doit contenir que des lettres
 	{
 		alert("prénom invalide");
 		sndId="firstNameErrorMsg";
 		sndMsg="prénom invalide";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 
@@ -127,26 +155,27 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		alert("nom trop court");
 		sndId="lastNameErrorMsg";
 		sndMsg="Le nom est incomplet";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
+	// if(! wNom.match(/^([a-zA-Z ]+)$/)) //le nom ne doit contenir que des lettres
 	if(! wNom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le nom ne doit contenir que des lettres
 	{
 		alert("nom invalide");
 		sndId="lastNameErrorMsg";
 		sndMsg="nom invalide";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 
 	/* l'adresse */
-	let wAdresse = document.getElementById("address").value;console.log("adresse est : "+wAdresse); 
+	let wAdresse = document.getElementById("address").value;console.log("adresse est : "+wAdresse);
+	//^[a-zA-Z0-9\s,'-]*$
+	// ou /^[a-zA-Z0-9\s,.'-]{3,}$/ 
+	// ou /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæ?ÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝ?Æ?._\s-]{5,60}$/ 
 	if (wAdresse.length <= 1) //longueur de l'adresse
 	{
 		alert("nom trop court");
 		sndId="addressErrorMsg";
 		sndMsg="L'adresse est incomplète";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 	if(! wAdresse.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
@@ -154,18 +183,21 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		alert("adresse invalide");
 		sndId="addressErrorMsg";
 		sndMsg="adresse invalide";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 
 	/* la ville */
 	let wVille = document.getElementById("city").value;console.log("ville est : "+wVille);
+	///^([a-zA-Z ]+)$/
+	//ou 
+	//^[a-zA-Z0-9\s,'-]*$
+	// ou /^[a-zA-Z0-9\s,.'-]{3,}$/ 
+	// ou /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæ?ÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝ?Æ?._\s-]{5,60}$/ 
 	if (wVille.length <= 1) //longueur de ville
 	{
 		alert("nom de ville trop court");
 		sndId="cityErrorMsg";
 		sndMsg="Le nom de la ville est incomplet";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 	if(! wVille.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
@@ -173,7 +205,6 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		alert("nom de ville invalide");
 		sndId="cityErrorMsg";
 		sndMsg="nom de ville invalide";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 
@@ -185,7 +216,6 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		alert("email trop court");
 		sndId="emailErrorMsg";
 		sndMsg="L'email est erroné";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 	// validité de l'email
@@ -194,34 +224,25 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		alert("email invalide");
 		sndId="emailErrorMsg";
 		sndMsg="email invalide";
-		indErr="1";
 		sndErrMsg(sndId,sndMsg);
 	}
 
-	if(indErr==="0") // pas d'erreur détectée alors création de contact et product
-	{	
-		// objet contact
-		let contact = 
-		{
-			firstName : document.getElementById("firstName").value,
-			lastName : document.getElementById("lastName").value,
-			address : document.getElementById("address").value,
-			city : document.getElementById("city").value,
-			email : document.getElementById("email").value
-		}; console.log("contact "+contact.firstName + " " + contact.lastName+" "+contact.address+" " +contact.city+" " +contact.email); 
-		// product tableau des produits
-		let product = {	ID : idA }; console.log("produits "+" "+"idA: "+product.ID);
-	}
 });
+
+
 
 
 function addElement(readingIndex)
 {
 	/* création des nouvelles div */
+
+	
 	// la section qui contiendra tout
 	let wSection = document.querySelector("#cart__items");
+	
 	//<article>
 	let newArticle = document.createElement('article');
+	
 	//<div>
 	let newDiv1 = document.createElement('div');
 	let newDiv2 = document.createElement('div');
@@ -229,20 +250,28 @@ function addElement(readingIndex)
 	let newDiv4 = document.createElement('div');
 	let newDiv5 = document.createElement('div');
 	let newDiv6 = document.createElement('div');
+	
 	//<img>
 	let newImg = document.createElement('img');
+	
 	//<h2>
 	let newH2 = document.createElement('h2');
+	
 	//<p>
 	let newP1 = document.createElement('p');
 	let newP2 = document.createElement('p');
 	let newP3 = document.createElement('p');
 	let newP4 = document.createElement('p');
+	
 	//<input>
 	let newInput = document.createElement('input');
+
 	
-	/* mise à jour des balises */	
+	/* mise à jour des balises */
+	// feedNewTag(readingIndex);	
 	feedNewTag(newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,newImg,newH2,newP1,newP2,newP3,newP4,newInput,readingIndex);
+
+	
 
 	/* Prépa pour affichage */
 	addChildren(newArticle,newDiv1);
@@ -259,44 +288,121 @@ function addElement(readingIndex)
 	addChildren(newDiv4,newDiv6); 
 	addChildren(newDiv6,newP4);
 	addChildren(wSection,newArticle);
+
+
+	// function addChildren()
+	// {
+
+	// 	// div1 et div2 vont dans article
+	// 	newArticle.appendChild(newDiv1);	
+	// 	newArticle.appendChild(newDiv2);
+	// 	//<img>
+	// 	newDiv1.appendChild(newImg);
+	// 	// la div3 va dans la div2
+	// 	newDiv2.appendChild(newDiv3); 
+	// 	//h2 va dans div3
+	// 	newDiv3.appendChild(newH2); 
+	// 	// p1 et p2 vont dans div3
+	// 	newDiv3.appendChild(newP1);
+	// 	newDiv3.appendChild(newP2); 
+	// 	// la div4 va dans la div2
+	// 	newDiv2.appendChild(newDiv4); 
+	// 	// la div5 va dans la div4
+	// 	newDiv4.appendChild(newDiv5);
+	// 	// div Qté et input
+	// 	newDiv5.appendChild(newP3); 
+	// 	newDiv5.appendChild(newInput); 
+	// 	// la div6 va dans la div4  
+	// 	newDiv4.appendChild(newDiv6); 
+	// 	// delete
+	// 	newDiv6.appendChild(newP4);
+
+	// 	/* mise à jour de la page */
+	// 	wSection.appendChild(newArticle);
+		
+	// 	// return;
+
+	// }
 }	
 
 function feedNewTag(newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,newImg,newH2,newP1,newP2,newP3,newP4,newInput,readingIndex)
 {
+
+
+	//<-article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
+	//newArticle.classList.add("cart__item");
 	newArticle=updClass(newArticle,"cart__item");
 	newArticle.id = returnObjName.idA[readingIndex]; 
 	newArticle.color = returnObjName.colorA[readingIndex];	console.log("article.class =  " +newArticle.className);
+	
+	//<div class="cart__item__img">
+	//newDiv1.classList.add("cart__item__img");console.log("div1.class =  " +newDiv1.className);
 	newDiv1=updClass(newDiv1,"cart__item__img");
+	
+	// <img src="../images/product01.jpg" alt="Photographie d'un canapé">
 	newImg.src = returnObjName.imgsrcA[readingIndex];let ZZZ = returnObjName.imgsrcA[readingIndex]; console.log("ZZZ " +ZZZ);
 	newImg.alt = returnObjName.imgaltA[readingIndex];	
+
+	//<div class="cart__item__content">
+	//newDiv2.classList.add("cart__item__content");console.log("div2.class =  " +newDiv2.className);
 	newDiv2=updClass(newDiv2,"cart__item__content");
+
+	//<div class="cart__item__content__description">
+	// newDiv3.classList.add("cart__item__content__description");console.log("div3.class =  " +newDiv3.className);
 	newDiv3=updClass(newDiv3,"cart__item__content__description");
+
+	///<h2>Nom du produit</h2>
 	newH2.innerHTML = returnObjName.nameA[readingIndex];
+	//<p>Vert</p>
 	newP1.innerHTML = returnObjName.colorA[readingIndex];
+	//<p>42,00 €</p>
 	newP2.innerHTML = returnObjName.priceA[readingIndex] +",00"+" " +"€";
+	
+	//<div class="cart__item__content__settings">
+	//newDiv4.classList.add("cart__item__content__settings");console.log("div4.class =  " +newDiv4.className);
 	newDiv4=updClass(newDiv4,"cart__item__content__settings");
-	newDiv5=updClass(newDiv5,"cart__item__content__settings__quantity");	
+	//<div class="cart__item__content__settings__quantity">
+	//newDiv5.classList.add("cart__item__content__settings__quantity");console.log("div5.class =  " +newDiv5.className);
+	newDiv5=updClass(newDiv5,"cart__item__content__settings__quantity");
+	//<p>Qté : </p>
 	newP3.innerHTML = "Qté : ";
+	//<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
 	newInput.type="number";
+	//newInput.classList.add("itemQuantity");console.log("newInput.class =  " +newInput.className);
 	newInput=updClass(newInput,"itemQuantity");
 	newInput.name="itemQuantity";
 	newInput.min=1;
 	newInput.max=100;
-	newInput.value = + returnObjName.qtyA[readingIndex];	
-	newDiv6=updClass(newDiv6,"cart__item__content__settings__delete");	
+	newInput.value = + returnObjName.qtyA[readingIndex];
+	
+	//<div class="cart__item__content__settings__delete">
+	//newDiv6.classList.add("cart__item__content__settings__delete");console.log("div6.class =  " +newDiv6.className);
+	newDiv6=updClass(newDiv6,"cart__item__content__settings__delete");
+	//<p class="deleteItem">Supprimer</p>
+	//newP4.classList.add("deleteItem");console.log("newP4 : "+newP4.className);
 	newP4=updClass(newP4,"deleteItem");
-	newP4.innerHTML = "Supprimer";	
+	newP4.innerHTML = "Supprimer";
+	
 	/* cumuls */
 	WtotalQty = WtotalQty+(parseInt(returnObjName.qtyA[readingIndex]));console.log("wtotalaty : "+WtotalQty);
 	WtotalAmount = WtotalAmount+((parseInt(returnObjName.qtyA[readingIndex]))*(parseInt(returnObjName.priceA[readingIndex])));console.log("wtotalamount : "+WtotalAmount);
+	// WtotalAmount = WtotalAmount+((parseInt(returnObjName.qtyA))*(parseInt(returnObjName.priceA)));console.log("wtotalamount : "+WtotalAmount);
+	//<div class="cart__item__content__settings__delete">
 	
-	return newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,newImg,newH2,newP1,newP2,newP3,newP4,newInput,readingIndex;
+	 return newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,newImg,newH2,newP1,newP2,newP3,newP4,newInput,readingIndex;
+
 }
 	
+	// return;
 
-/* renseignement des tableaux depuis le LocalStorage */
+
+
+
+
+/* renseignement des tableaux depuis le local storage */
 function loadFromLocalStorage(returnObjName)
 {
+
 	keyA=returnObjName.keyA;
 	idA=returnObjName.idA;
 	colorA=returnObjName.colorA;
@@ -304,7 +410,10 @@ function loadFromLocalStorage(returnObjName)
 	priceA = returnObjName.priceA;
 	nameA = returnObjName.nameA;
 	imgsrcA=returnObjName.imgsrcA;
-	imgaltA=returnObjName.imgaltA;				
+	imgaltA=returnObjName.imgaltA;
+				
+	// return;
+
 }
 
 
@@ -323,14 +432,19 @@ function loadToLocalStorage()
 		imgsrcA,  
 		imgaltA  
 	};
+	/*let objLinea = JSON.stringify(objJson);
+	localStorage.setItem("obj",objLinea);*/
 	let WachatA = JSON.stringify(Wachat);
 	localStorage.clear();// rdx 30/12/2021 ou storage.removeItem(WachatA);
-	localStorage.setItem("WachatA",WachatA);// c'est le panier dans le LocalStorage
+	localStorage.setItem("WachatA",WachatA);// à vérifier RDX
+
+	// return;
 }
 
 // suppression dans les tableaux
 function deleteElement(iA)
 {
+
 	keyA.splice(iA,1);
 	idA.splice(iA,1);
 	colorA.splice(iA,1);
@@ -339,24 +453,64 @@ function deleteElement(iA)
 	nameA.splice(iA,1);
 	imgsrcA.splice(iA,1);
 	imgaltA.splice(iA,1);
+
 	// return;
 }
 
 // ajout de la balise enfant à son parent
 function addChildren(pParent,pChild)
 {
-	pParent.appendChild(pChild);		
+
+	pParent.appendChild(pChild);	
+		// // div1 et div2 vont dans article
+		// newArticle.appendChild(newDiv1);	
+		// newArticle.appendChild(newDiv2);
+		// //<img>
+		// newDiv1.appendChild(newImg);
+		// // la div3 va dans la div2
+		// newDiv2.appendChild(newDiv3); 
+		// //h2 va dans div3
+		// newDiv3.appendChild(newH2); 
+		// // p1 et p2 vont dans div3
+		// newDiv3.appendChild(newP1);
+		// newDiv3.appendChild(newP2); 
+		// // la div4 va dans la div2
+		// newDiv2.appendChild(newDiv4); 
+		// // la div5 va dans la div4
+		// newDiv4.appendChild(newDiv5);
+		// // div Qté et input
+		// newDiv5.appendChild(newP3); 
+		// newDiv5.appendChild(newInput); 
+		// // la div6 va dans la div4  
+		// newDiv4.appendChild(newDiv6); 
+		// // delete
+		// newDiv6.appendChild(newP4);
+
+		// /* mise à jour de la page */
+		// wSection.appendChild(newArticle);
+		
 	return pParent,pChild;
+
 }
 
-function updClass(element,className)
+	function updClass(element,className)
 {
+	/* utiliser l'API classList pour supprimer et ajouter des classes
+	https://developer.mozilla.org/fr/docs/Web/API/Element/classList	
+	const div = document.createElement('div');
+	div.classList.add("anotherclass")*/ 
 	element.classList.add(className);//console.log("newH3.class =  " +newH3.className);
+
 	return element;
+
 }
 
-function sndErrMsg(sndId,sndMsg) // Affichage du msg d'erreur - identifiant de la balise et message à afficher
+
+function sndErrMsg(sndId,sndMsg) 
 {
+	// var ErrElt = document.querySelector(sndId);
+  
+	// ErrElt.innerHTML = sndMsg;
 	document.getElementById(sndId).innerHTML = sndMsg;
 	return sndId,sndMsg;
 }
