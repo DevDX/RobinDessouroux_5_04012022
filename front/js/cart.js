@@ -201,6 +201,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 	if(indErr==="0") // pas d'erreur détectée alors création de contact et product
 	{	
 		// objet contact
+		// let contact = document.forms["cart__order__form"]; 		console.log("contact "+contact.firstName + " " + contact.lastName+" "+contact.address+" " +contact.city+" " +contact.email); 
 		let contact = 
 		{
 			firstName : document.getElementById("firstName").value,
@@ -210,7 +211,10 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 			email : document.getElementById("email").value
 		}; console.log("contact "+contact.firstName + " " + contact.lastName+" "+contact.address+" " +contact.city+" " +contact.email); 
 		// product tableau des produits
-		let product = {	ID : idA }; console.log("produits "+" "+"idA: "+product.ID);
+		let ID = [];
+		ID = idA ; 
+		let produit = {ID};
+		let product = JSON.stringify(produit);console.log("ID: "+ID);console.log("idA "+idA);console.log("product "+product);
 	}
 });
 
