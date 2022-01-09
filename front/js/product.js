@@ -13,8 +13,7 @@ let	imgaltA = [];
 let iA = 0; //index tableau
 
 
-/* Récupération du paramètre id */
-//cf.https://www.sitepoint.com/get-url-parameters-with-javascript/
+/* Récupération du paramètre id *///cf.https://www.sitepoint.com/get-url-parameters-with-javascript/
 const QUERYSTRING = window.location.search;// console.log("1 = "+QUERYSTRING);
 const URLPARAMS = new URLSearchParams(QUERYSTRING);// console.log("2 = "+URLPARAMS);
 const pId = URLPARAMS.get('id')//identifiant du produit sélectionné	// console.log("3 ID = "+pId); 
@@ -37,18 +36,10 @@ fetch(urlAPIproductSelected)
 	.catch((err) => console.log('Erreur : ' + err));
 
 		
-
 //listener se déclenchant sur le clic du bouton ajouter au panier
-/*https://developer.mozilla.org/fr/docs/Web/API/EventTarget/addEventListener
-// Ajouter un écouteur d'évènements à la table avec une fonction fléchée
-const el = document.querySelector("#outside");
-el.addEventListener("click", () => {
-  modifyText("quatre");
-}, false);*/
 const evtAddCart = document.querySelector("#addToCart"); //listener se déclenchant sur le clic du bouton "ajouter au panier"
 evtAddCart.addEventListener("click", () => 
 {
-
 	// check quantité et couleur (les 2 doivent être non vides) 
 	if ((parseInt(document.querySelector("#quantity").value)) > 0 && (document.querySelector("#colors").value)!=="") 
 	{		
@@ -72,15 +63,7 @@ evtAddCart.addEventListener("click", () =>
 			
 		}
 
-		
 		/* Ajout ou mise à jour de l'achat */
-		/*https://fr.w3docs.com/snippets/javascript/comment-verifier-si-un-element-est-present-dans-un-tableau-en-javascript.html
-		if (myArray.indexOf(searchTerm) === -1) {
-		console.log("element doesn't exist");
-		}
-		else {
-		console.log("element found");
-		}*/
 		// constitution de ma clé : identifiant unique (id et couleur)
 		let Wkey = pId+document.querySelector("#colors").value; console.log(Wkey);	
 		if(keyA.indexOf(Wkey) === -1) // PAS trouvé alors ajout des données dans les tableaux
@@ -108,7 +91,6 @@ evtAddCart.addEventListener("click", () =>
 	}		
 
 });
-
 
 
 //création et renseignement des éléments 
@@ -145,31 +127,13 @@ function addElement (data)
 	});
 
 	/* 4. mise-à-jour de la page */
-	wPicture.appendChild(newImg);
-		
-	// return;
-
-
-	// function feedNewTag(data)
-	// {
-	// 	newImg.src = data.imageUrl;console.log("newImg.src =  " +newImg.src);
-	// 	newImg.alt = data.altTxt;console.log("newImg.alt =  " +newImg.alt);
-	// 	WimgsrcA = newImg.src;
-	// 	WimgaltA = newImg.alt;
-	// 	wTitle.innerHTML = data.name; console.log("wTitle.innerHTML =  " +wTitle.innerHTML);
-	// 	wDescription.innerHTML = data.description; console.log("wDescription.innerHTML  =  " +wDescription.innerHTML );
-	// 	wPrice.innerHTML = data.price; console.log("price  =  " +wPrice.innerHTML );
-
-	// 	return;
-
-	// }
-					
+	wPicture.appendChild(newImg);					
 }	
+
 
 /* renseignement des tableaux depuis le local storage */
 function loadFromLocalStorage(returnObjName)
 {
-
 	keyA=returnObjName.keyA;
 	idA=returnObjName.idA;
 	colorA=returnObjName.colorA;
@@ -177,10 +141,8 @@ function loadFromLocalStorage(returnObjName)
 	priceA = returnObjName.priceA;
 	nameA = returnObjName.nameA;
 	imgsrcA=returnObjName.imgsrcA;
-	imgaltA=returnObjName.imgaltA;
-				
+	imgaltA=returnObjName.imgaltA;		
 	// return;
-
 }
 
 /* ajout des données dans le localstorage */
@@ -203,7 +165,6 @@ function loadToLocalStorage()
 	let WachatA = JSON.stringify(Wachat);
 	localStorage.clear();// rdx 30/12/2021 ou storage.removeItem(WachatA);
 	localStorage.setItem("WachatA",WachatA);// à vérifier RDX
-
 	// return;
 }
 
@@ -213,12 +174,10 @@ function addInArrays(Wkey)
 	idA.push(pId);
 	colorA.push(document.querySelector("#colors").value);
 	qtyA.push(parseInt(document.querySelector("#quantity").value));
-	// nameA.push(document.querySelector("#title").textContent);	// ajout 27/12/2021 rdx https://fr.flossmanuals.net/initiation-a-javascript/manipuler-le-texte/
 	nameA.push(document.querySelector("#title").textContent);
 	priceA.push(parseInt(document.querySelector("#price").textContent));
 	imgsrcA.push(WimgsrcA);
 	imgaltA.push(WimgaltA);
-
 	// return;
 }
 
@@ -231,7 +190,5 @@ function feedNewTag(newImg,wTitle,wDescription,wPrice,data)
 	wTitle.innerHTML = data.name; console.log("wTitle.innerHTML =  " +wTitle.innerHTML);
 	wDescription.innerHTML = data.description; console.log("wDescription.innerHTML  =  " +wDescription.innerHTML );
 	wPrice.innerHTML = data.price; console.log("price  =  " +wPrice.innerHTML );
-
 	return newImg,wTitle,wDescription,wPrice,data;
-
 }

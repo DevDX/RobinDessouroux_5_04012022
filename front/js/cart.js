@@ -1,6 +1,7 @@
 //initialisation des variables globales 
 let WtotalQty = 0;	//variables globale pour cumul quantité
 let WtotalAmount = 0;	//variables globale pour cumul quantité
+let indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide 
 
 let WimgsrcA = "vide"; //chemin de l'image
 let	WimgaltA = "vide"; //texte alternatif de l'image
@@ -22,6 +23,7 @@ let returnObjName= JSON.parse(localStorage.getItem('WachatA'));
 if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le local storage
 { 	
 	// boucle pour affichage 
+	indEmpty = "0";
 	for (let readingIndex=0;readingIndex<=(Object.keys(returnObjName.keyA).length)-1;readingIndex++)
 	{
 		document.body.onload = addElement(readingIndex);//création des nouveaux éléments 		
@@ -38,6 +40,7 @@ if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le 
 else //Rien dans local storage
 {	
 	alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");//console.log("localStorage est vide.");
+	indEmpty = "1";
 }
   
 
@@ -91,130 +94,171 @@ for (let Wdel of Wdelete)
 const evtAddOrder = document.querySelector("#order");  
 evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le clic du bouton "commander"
 {
-	event.preventDefault(); //	alert("commande détectée");	
-	// iniErrMsg
-	document.getElementById("firstNameErrorMsg").innerHTML = "";// faire une fonction
-	document.getElementById("lastNameErrorMsg").innerHTML = "";// faire une fonction
-	document.getElementById("addressErrorMsg").innerHTML = "";// faire une fonction
-	document.getElementById("cityErrorMsg").innerHTML = "";// faire une fonction
-	document.getElementById("emailErrorMsg").innerHTML = "";// faire une fonction
-	let indErr="0";	//indicateur erreur détectée <=> 0=pas d'erreur	
-
-	//test du formulaire 
-	/* le prénom */
-	let wPrenom = document.getElementById("firstName").value;console.log("le prénom est : "+wPrenom);
-	if (wPrenom.length <= 1) //longueur du prénom
-	{		
-		alert("prénom trop court");
-		sndId="firstNameErrorMsg";
-		sndMsg="Le prénom est incomplet";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-	if(! wPrenom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le prénom ne doit contenir que des lettres
+	if(indEmpty === "1")
 	{
-		alert("prénom invalide");
-		sndId="firstNameErrorMsg";
-		sndMsg="prénom invalide";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
+		alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");
 	}
-
-    /* le nom */
-	let wNom = document.getElementById("lastName").value;console.log("le nom est : "+wNom);
-	if (wNom.length <= 1) //longueur du nom
-	{
-		alert("nom trop court");
-		sndId="lastNameErrorMsg";
-		sndMsg="Le nom est incomplet";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-	if(! wNom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le nom ne doit contenir que des lettres
-	{
-		alert("nom invalide");
-		sndId="lastNameErrorMsg";
-		sndMsg="nom invalide";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-
-	/* l'adresse */
-	let wAdresse = document.getElementById("address").value;console.log("adresse est : "+wAdresse); 
-	if (wAdresse.length <= 1) //longueur de l'adresse
-	{
-		alert("nom trop court");
-		sndId="addressErrorMsg";
-		sndMsg="L'adresse est incomplète";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-	if(! wAdresse.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
-	{
-		alert("adresse invalide");
-		sndId="addressErrorMsg";
-		sndMsg="adresse invalide";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-
-	/* la ville */
-	let wVille = document.getElementById("city").value;console.log("ville est : "+wVille);
-	if (wVille.length <= 1) //longueur de ville
-	{
-		alert("nom de ville trop court");
-		sndId="cityErrorMsg";
-		sndMsg="Le nom de la ville est incomplet";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-	if(! wVille.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
-	{
-		alert("nom de ville invalide");
-		sndId="cityErrorMsg";
-		sndMsg="nom de ville invalide";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-
-	/* le mail */
-	// (/^([w-.]+)@((?:[w]+.)+)([a-zA-Z]{2,4})/i)
-	let wEmail = document.getElementById("email").value;console.log("le mail est : "+wEmail);
-	if (wEmail.length <= 1) //longueur du nom
-	{
-		alert("email trop court");
-		sndId="emailErrorMsg";
-		sndMsg="L'email est erroné";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-	// validité de l'email
-	if(! wEmail.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) //à vérifier 
-	{
-		alert("email invalide");
-		sndId="emailErrorMsg";
-		sndMsg="email invalide";
-		indErr="1";
-		sndErrMsg(sndId,sndMsg);
-	}
-
-	if(indErr==="0") // pas d'erreur détectée alors création de contact et product
+	else
 	{	
-		// objet contact
-		// let contact = document.forms["cart__order__form"]; 		console.log("contact "+contact.firstName + " " + contact.lastName+" "+contact.address+" " +contact.city+" " +contact.email); 
-		let contact = 
+		event.preventDefault(); //	alert("commande détectée");	
+		// iniErrMsg
+		document.getElementById("firstNameErrorMsg").innerHTML = "";// faire une fonction
+		document.getElementById("lastNameErrorMsg").innerHTML = "";// faire une fonction
+		document.getElementById("addressErrorMsg").innerHTML = "";// faire une fonction
+		document.getElementById("cityErrorMsg").innerHTML = "";// faire une fonction
+		document.getElementById("emailErrorMsg").innerHTML = "";// faire une fonction
+		let indErr="0";	//indicateur erreur détectée <=> 0=pas d'erreur	
+
+		//test du formulaire 
+		/* le prénom */
+		let wPrenom = document.getElementById("firstName").value;console.log("le prénom est : "+wPrenom);
+		if (wPrenom.length <= 1) //longueur du prénom
+		{		
+			alert("prénom trop court");
+			sndId="firstNameErrorMsg";
+			sndMsg="Le prénom est incomplet";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+		if(! wPrenom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le prénom ne doit contenir que des lettres
 		{
-			firstName : document.getElementById("firstName").value,
-			lastName : document.getElementById("lastName").value,
-			address : document.getElementById("address").value,
-			city : document.getElementById("city").value,
-			email : document.getElementById("email").value
-		}; console.log("contact "+contact.firstName + " " + contact.lastName+" "+contact.address+" " +contact.city+" " +contact.email); 
-		// product tableau des produits
-		let ID = [];
-		ID = idA ; 
-		let produit = {ID};
-		let product = JSON.stringify(produit);console.log("ID: "+ID);console.log("idA "+idA);console.log("product "+product);
+			alert("prénom invalide");
+			sndId="firstNameErrorMsg";
+			sndMsg="prénom invalide";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+
+		/* le nom */
+		let wNom = document.getElementById("lastName").value;console.log("le nom est : "+wNom);
+		if (wNom.length <= 1) //longueur du nom
+		{
+			alert("nom trop court");
+			sndId="lastNameErrorMsg";
+			sndMsg="Le nom est incomplet";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+		if(! wNom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le nom ne doit contenir que des lettres
+		{
+			alert("nom invalide");
+			sndId="lastNameErrorMsg";
+			sndMsg="nom invalide";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+
+		/* l'adresse */
+		let wAdresse = document.getElementById("address").value;console.log("adresse est : "+wAdresse); 
+		if (wAdresse.length <= 1) //longueur de l'adresse
+		{
+			alert("nom trop court");
+			sndId="addressErrorMsg";
+			sndMsg="L'adresse est incomplète";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+		if(! wAdresse.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
+		{
+			alert("adresse invalide");
+			sndId="addressErrorMsg";
+			sndMsg="adresse invalide";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+
+		/* la ville */
+		let wVille = document.getElementById("city").value;console.log("ville est : "+wVille);
+		if (wVille.length <= 1) //longueur de ville
+		{
+			alert("nom de ville trop court");
+			sndId="cityErrorMsg";
+			sndMsg="Le nom de la ville est incomplet";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+		if(! wVille.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{3,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
+		{
+			alert("nom de ville invalide");
+			sndId="cityErrorMsg";
+			sndMsg="nom de ville invalide";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+
+		/* le mail */
+		// (/^([w-.]+)@((?:[w]+.)+)([a-zA-Z]{2,4})/i)
+		let wEmail = document.getElementById("email").value;console.log("le mail est : "+wEmail);
+		if (wEmail.length <= 1) //longueur du nom
+		{
+			alert("email trop court");
+			sndId="emailErrorMsg";
+			sndMsg="L'email est erroné";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+		// validité de l'email
+		if(! wEmail.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) //à vérifier 
+		{
+			alert("email invalide");
+			sndId="emailErrorMsg";
+			sndMsg="email invalide";
+			indErr="1";
+			sndErrMsg(sndId,sndMsg);
+		}
+
+		if(indErr==="0") // pas d'erreur détectée alors création de contact et product
+		{	
+			// objet contact
+			// let contact = document.forms["cart__order__form"]; 		console.log("contact "+contact.firstName + " " + contact.lastName+" "+contact.address+" " +contact.city+" " +contact.email); 
+			let contact = (
+			{
+				firstName : document.getElementById("firstName").value,
+				lastName : document.getElementById("lastName").value,
+				address : document.getElementById("address").value,
+				city : document.getElementById("city").value,
+				email : document.getElementById("email").value
+			}); console.log("contact "+contact.firstName + " " + contact.lastName+" "+contact.address+" " +contact.city+" " +contact.email); 
+			// products => tableau des produits
+			let products = idA; // idA est l'array qui contient les id des articles contenus dans le panier
+			console.log("idA "+idA);console.log("products "+products);
+			/* POST */
+			const pObjects =  {contact,products}; // objets à passer en paramètres à passer => contact et product 
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(pObjects)
+			};console.log(requestOptions);
+			fetch('http://localhost:3000/api/products/order', requestOptions)
+				.then(async response => {
+					const isJson = response.headers.get('content-type')?.includes('application/json');
+					const data = isJson && await response.json();
+					console.log("data :"+data);
+					// check response
+					if (!response.ok) {
+						// error message from body or default to response status
+						const error = (data && data.message) || response.status;
+						return Promise.reject(error);
+					}
+					else{
+						alert("orderId "+data.orderId);
+						let porderId = data.orderId;
+						// affichage page confirmation
+						// document.location.href="./confirmation.html"+"/"+porderId;			
+						// let orderIdConfirmation = document.getElementById("orderId");
+						// orderIdConfirmation.value = porderId; console.log("numéro de commande "+porderId); // numéro de commande
+						// localStorage.clear();
+						document.location.href="./confirmation.html"+"?orderId="+porderId;						
+						
+
+					}			
+				})
+
+				.catch(error => {
+					console.error('There was an error!', error);
+				});
+			/* fin POST */
+		}
 	}
 });
 
@@ -298,8 +342,7 @@ function feedNewTag(newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,n
 }
 	
 
-/* renseignement des tableaux depuis le LocalStorage */
-function loadFromLocalStorage(returnObjName)
+function loadFromLocalStorage(returnObjName) /* renseignement des tableaux depuis le LocalStorage */
 {
 	keyA=returnObjName.keyA;
 	idA=returnObjName.idA;
@@ -311,9 +354,7 @@ function loadFromLocalStorage(returnObjName)
 	imgaltA=returnObjName.imgaltA;				
 }
 
-
-/* ajout des données dans le localstorage */
-function loadToLocalStorage()
+function loadToLocalStorage() /* ajout des données dans le localstorage */
 {
 	// achat effectué
 	let Wachat = 
@@ -332,8 +373,7 @@ function loadToLocalStorage()
 	localStorage.setItem("WachatA",WachatA);// c'est le panier dans le LocalStorage
 }
 
-// suppression dans les tableaux
-function deleteElement(iA)
+function deleteElement(iA) // suppression dans les tableaux
 {
 	keyA.splice(iA,1);
 	idA.splice(iA,1);
@@ -346,16 +386,15 @@ function deleteElement(iA)
 	// return;
 }
 
-// ajout de la balise enfant à son parent
-function addChildren(pParent,pChild)
+function addChildren(pParent,pChild) // ajout de la balise enfant à son parent
 {
 	pParent.appendChild(pChild);		
 	return pParent,pChild;
 }
 
-function updClass(element,className)
+function updClass(element,className) // ajout de la classe à l'élément
 {
-	element.classList.add(className);//console.log("newH3.class =  " +newH3.className);
+	element.classList.add(className);
 	return element;
 }
 
