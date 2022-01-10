@@ -2,6 +2,7 @@
 let WtotalQty = 0;	//variables globale pour cumul quantité
 let WtotalAmount = 0;	//variables globale pour cumul quantité
 let indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide 
+let qtyOk = "OK"; // qtyOk="OK" alors quantité valide 
 
 let WimgsrcA = "vide"; //chemin de l'image
 let	WimgaltA = "vide"; //texte alternatif de l'image
@@ -23,7 +24,7 @@ let returnObjName= JSON.parse(localStorage.getItem('WachatA'));
 if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le local storage
 { 	
 	// boucle pour affichage 
-	indEmpty = "0";
+	indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide 
 	for (let readingIndex=0;readingIndex<=(Object.keys(returnObjName.keyA).length)-1;readingIndex++)
 	{
 		document.body.onload = addElement(readingIndex);//création des nouveaux éléments 		
@@ -39,8 +40,8 @@ if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le 
 }
 else //Rien dans local storage
 {	
-	alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");//console.log("localStorage est vide.");
-	indEmpty = "1";
+	// alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");//console.log("localStorage est vide.");
+	indEmpty = "1"; // panier vide. 0=PAS vide, 1=vide 
 }
   
 
@@ -51,7 +52,7 @@ for (let Wmodif of Wmodifs)
 	Wmodif.addEventListener('change', function() //change de la quantité
 	{
 		let newQt = this.value;//nouvelle quantité affichée à l'écran 
-		if (newQt >= 0)	//la quantité doit être positive ou 0
+		if (newQt > 0)	//la quantité doit être positive  
 		{ 
 			let reslt = Wmodif.closest("article");// recherche de l'article qui contient les identifiants
 			let wCheck=reslt.id+reslt.color; //constitution de l'identifiant unique	//console.log("modif détectée : "+wCheck);//alert("modif détectée " +wCheck);	alert("nouvelle quantité " +newQt); 
@@ -65,7 +66,8 @@ for (let Wmodif of Wmodifs)
 		}
 		else
 		{
-			alert("Quantité invalide. Veuillez corriger. Une quantité ne peut pas être infèrieure à 0.")	;
+			alert("Quantité invalide. Veuillez corriger. Une quantité ne peut pas être infèrieure à 1.")	;
+			qtyOk = "";
 		}
 	});
 }
@@ -94,7 +96,7 @@ for (let Wdel of Wdelete)
 const evtAddOrder = document.querySelector("#order");  
 evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le clic du bouton "commander"
 {
-	if(indEmpty === "1")
+	if(indEmpty === "1" || qtyOk === "")
 	{
 		alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");
 	}
