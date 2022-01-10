@@ -59,12 +59,11 @@ evtAddCart.addEventListener("click", () =>
 			for (let readingIndex=0;readingIndex<=(Object.keys(returnObjName.keyA).length)-1;readingIndex++)
 			{
 				loadFromLocalStorage(returnObjName);/* renseignement des tableaux depuis le localstorage *///console.log("reading index vaut  "+[readingIndex]);
-			}
-			
+			}			
 		}
 
 		/* Ajout ou mise à jour de l'achat */
-		// constitution de ma clé : identifiant unique (id et couleur)
+		// constitution de ma clé Wkey: identifiant unique (id et couleur)
 		let Wkey = pId+document.querySelector("#colors").value; console.log(Wkey);	
 		if(keyA.indexOf(Wkey) === -1) // PAS trouvé alors ajout des données dans les tableaux
 		{
@@ -111,11 +110,6 @@ function addElement (data)
 	feedNewTag(newImg,wTitle,wDescription,wPrice,data);	
 
 	/* 3. cas particulier: les couleurs */
-	/*https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Array
-	let fruits = ['Apple', 'Banana'];
-	fruits.forEach(function(item, index, array) {
-	console.log(item, index);
-	});*/
 	let colorsA = data.colors;//console.log("array des couleurs : " + colorsA);
 	colorsA.forEach(function(item, index, array) 
 	{
@@ -168,6 +162,7 @@ function loadToLocalStorage()
 	// return;
 }
 
+// renseignement des tableaux
 function addInArrays(Wkey)
 {
 	keyA.push(Wkey);
@@ -181,6 +176,7 @@ function addInArrays(Wkey)
 	// return;
 }
 
+// renseignement des nouvelles balises
 function feedNewTag(newImg,wTitle,wDescription,wPrice,data)
 {
 	newImg.src = data.imageUrl;console.log("newImg.src =  " +newImg.src);

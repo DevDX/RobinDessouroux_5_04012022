@@ -34,7 +34,6 @@ function addElement (data)
 	let newP = document.createElement('p');
 	
 	/* 2. renseignement des nouvelles balises depuis les données de l'API */ 
-	// //feedNewTag(data);
 	newImg.src = data.imageUrl;//console.log("newImg.src =  " +newImg.src);
 	newImg.alt = data.altTxt;//console.log("newImg.alt =  " +newImg.alt);
 	newA.href = "./product.html?id="+data._id; console.log("newA.href =  " +newA.href);console.log("data[i]._id =  " +data._id);
@@ -48,12 +47,6 @@ function addElement (data)
 	/* 4. mise à jour de la page */
 	// ajout de <a> dans <section id="items">    
 	document.getElementById("items").appendChild(newA);
-	// // article est dans <a>
-	// newA.appendChild(newArticle);
-	// // <article> contient les autres
-	// newArticle.appendChild(newImg);
-	// newArticle.appendChild(newH3);
-	// newArticle.appendChild(newP);	
 	addChildren(newA,newArticle);
 	addChildren(newArticle,newImg);
 	addChildren(newArticle,newH3);

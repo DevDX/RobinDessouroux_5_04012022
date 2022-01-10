@@ -1,6 +1,6 @@
 //initialisation des variables globales 
-let WtotalQty = 0;	//variables globale pour cumul quantité
-let WtotalAmount = 0;	//variables globale pour cumul quantité
+let WtotalQty = 0;	//variable globale pour cumul quantité
+let WtotalAmount = 0;	//variable globale pour cumul quantité
 let indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide 
 let qtyOk = "OK"; // qtyOk="OK" alors quantité valide 
 
@@ -265,9 +265,10 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 });
 
 
+/* création des éléments */
 function addElement(readingIndex)
 {
-	/* création des nouvelles div */
+	/* création des nouvelles balises */
 	// la section qui contiendra tout
 	let wSection = document.querySelector("#cart__items");
 	//<article>
@@ -311,6 +312,7 @@ function addElement(readingIndex)
 	addChildren(wSection,newArticle);
 }	
 
+// ajout des classes et renseignement des balises
 function feedNewTag(newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,newImg,newH2,newP1,newP2,newP3,newP4,newInput,readingIndex)
 {
 	newArticle=updClass(newArticle,"cart__item");
