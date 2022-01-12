@@ -2,7 +2,7 @@
 let WtotalQty = 0;	//variable globale pour cumul quantité
 let WtotalAmount = 0;	//variable globale pour cumul quantité
 let indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide 
-let qtyOk = "OK"; // qtyOk="OK" alors quantité valide 
+let qtyOk = ""; // qtyOk="OK" alors quantité valide 
 
 let WimgsrcA = "vide"; //chemin de l'image
 let	WimgaltA = "vide"; //texte alternatif de l'image
@@ -24,7 +24,7 @@ let returnObjName= JSON.parse(localStorage.getItem('WachatA'));
 if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le local storage
 { 	
 	// boucle pour affichage 
-	indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide 
+	// indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide 
 	for (let readingIndex=0;readingIndex<=(Object.keys(returnObjName.keyA).length)-1;readingIndex++)
 	{
 		document.body.onload = addElement(readingIndex);//création des nouveaux éléments 		
@@ -36,6 +36,22 @@ if(returnObjName && Object.keys(returnObjName).length > 0)	// présence dans le 
 	wtotalQuantity.innerHTML = WtotalQty;
 	let wtotalPrice = document.querySelector("#totalPrice");
 	wtotalPrice.innerHTML = WtotalAmount;
+	//Si quantité cumulée supérieure à 0
+	if(WtotalQty  > 0)
+	{
+		qtyOk = "OK";	indEmpty = "0"; // panier vide. 0=PAS vide, 1=vide
+		// button.disabled = false; 
+		document.getElementById("order").disabled = false;
+	}
+	else
+	{
+		qtyOk = "";	indEmpty = "1"; // panier vide. 0=PAS vide, 1=vide 
+		// button.disabled = true; 
+		document.getElementById("order").disabled = true;
+		// alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");
+	}
+
+	
 
 }
 else //Rien dans local storage
@@ -85,7 +101,16 @@ for (let Wdel of Wdelete)
 		iA = keyA.indexOf(wCheck);	console.log("iA "+iA);//récupération de l'index de l'élément sélectionné
 		deleteElement(iA);//suppression de l'élément sélectionné dans les tableaux
 		
-		loadToLocalStorage();/* Stockage des données dans le localstorage */
+		let indTestArrayVide = keyA.length; console.log("keyA.length = "+indTestArrayVide);
+		if(indTestArrayVide > 0) // si au moins 1 article dans les tableaux
+		{
+			loadToLocalStorage(); /* Stockage des données dans le localstorage */
+		}
+		else // si plus d'article dans les tableaux
+		{
+			localStorage.clear();// rdx 30/12/2021 ou storage.removeItem(WachatA);
+		}
+
 		alert("Cet achat a bien été retiré de votre panier.")//msg pour dire que c'est retiré du panier 
 		document.location.href="./cart.html";// refresh de la page		
 	});
@@ -96,6 +121,27 @@ for (let Wdel of Wdelete)
 const evtAddOrder = document.querySelector("#order");  
 evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le clic du bouton "commander"
 {
+	
+	//vérification que la quantité est supérieure à 0
+	if(WtotalQty > 0)
+	{	
+		loadToLocalStorage();/* Stockage des données dans le localstorage ici en cas de suppression manuelle du localstorage*/
+		if(WtotalQty > 0) // au cas où suppression du dernier article
+		{	
+			qtyOk = "OK";
+		}
+		else
+		{
+			qtyOk = "";	indEmpty = "1";//alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");
+		}
+
+	}
+	else
+	{
+		qtyOk = "";	indEmpty = "1";//alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");
+	}
+
+
 	if(indEmpty === "1" || qtyOk === "")
 	{
 		alert("Votre panier est vide, vous devez sélectionner au moins 1 article. Retournez sur la page Accueil.");
@@ -116,7 +162,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		let wPrenom = document.getElementById("firstName").value;console.log("le prénom est : "+wPrenom);
 		if (wPrenom.length <= 1) //longueur du prénom
 		{		
-			alert("prénom trop court");
+			// alert("prénom trop court");
 			sndId="firstNameErrorMsg";
 			sndMsg="Le prénom est incomplet";
 			indErr="1";
@@ -124,7 +170,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		}
 		if(! wPrenom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le prénom ne doit contenir que des lettres
 		{
-			alert("prénom invalide");
+			// alert("prénom invalide");
 			sndId="firstNameErrorMsg";
 			sndMsg="prénom invalide";
 			indErr="1";
@@ -135,7 +181,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		let wNom = document.getElementById("lastName").value;console.log("le nom est : "+wNom);
 		if (wNom.length <= 1) //longueur du nom
 		{
-			alert("nom trop court");
+			// alert("nom trop court");
 			sndId="lastNameErrorMsg";
 			sndMsg="Le nom est incomplet";
 			indErr="1";
@@ -143,7 +189,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		}
 		if(! wNom.match(/^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{2,60}$/)) //le nom ne doit contenir que des lettres
 		{
-			alert("nom invalide");
+			// alert("nom invalide");
 			sndId="lastNameErrorMsg";
 			sndMsg="nom invalide";
 			indErr="1";
@@ -154,7 +200,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		let wAdresse = document.getElementById("address").value;console.log("adresse est : "+wAdresse); 
 		if (wAdresse.length <= 1) //longueur de l'adresse
 		{
-			alert("nom trop court");
+			// alert("nom trop court");
 			sndId="addressErrorMsg";
 			sndMsg="L'adresse est incomplète";
 			indErr="1";
@@ -162,7 +208,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		}
 		if(! wAdresse.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{5,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
 		{
-			alert("adresse invalide");
+			// alert("adresse invalide");
 			sndId="addressErrorMsg";
 			sndMsg="adresse invalide";
 			indErr="1";
@@ -173,7 +219,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		let wVille = document.getElementById("city").value;console.log("ville est : "+wVille);
 		if (wVille.length <= 1) //longueur de ville
 		{
-			alert("nom de ville trop court");
+			// alert("nom de ville trop court");
 			sndId="cityErrorMsg";
 			sndMsg="Le nom de la ville est incomplet";
 			indErr="1";
@@ -181,7 +227,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		}
 		if(! wVille.match(/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝÆ._\s-]{3,60}$/ )) //l'adresse peut contenir des chiffres et des lettres ;-)
 		{
-			alert("nom de ville invalide");
+			// alert("nom de ville invalide");
 			sndId="cityErrorMsg";
 			sndMsg="nom de ville invalide";
 			indErr="1";
@@ -193,7 +239,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		let wEmail = document.getElementById("email").value;console.log("le mail est : "+wEmail);
 		if (wEmail.length <= 1) //longueur du nom
 		{
-			alert("email trop court");
+			// alert("email trop court");
 			sndId="emailErrorMsg";
 			sndMsg="L'email est erroné";
 			indErr="1";
@@ -202,7 +248,7 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 		// validité de l'email
 		if(! wEmail.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) //à vérifier 
 		{
-			alert("email invalide");
+			// alert("email invalide");
 			sndId="emailErrorMsg";
 			sndMsg="email invalide";
 			indErr="1";
@@ -226,33 +272,29 @@ evtAddOrder.addEventListener("click", () => //listener se déclenchant sur le cl
 			console.log("idA "+idA);console.log("products "+products);
 			/* POST */
 			const pObjects =  {contact,products}; // objets à passer en paramètres à passer => contact et product 
-			const requestOptions = {
+			const requestOptions = 
+			{
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(pObjects)
-			};console.log(requestOptions);
+			};	console.log(requestOptions);
+
 			fetch('http://localhost:3000/api/products/order', requestOptions)
 				.then(async response => {
 					const isJson = response.headers.get('content-type')?.includes('application/json');
 					const data = isJson && await response.json();
 					console.log("data :"+data);
 					// check response
-					if (!response.ok) {
+					if (!response.ok) 
+					{
 						// error message from body or default to response status
 						const error = (data && data.message) || response.status;
 						return Promise.reject(error);
 					}
 					else{
-						alert("orderId "+data.orderId);
-						let porderId = data.orderId;
-						// affichage page confirmation
-						// document.location.href="./confirmation.html"+"/"+porderId;			
-						// let orderIdConfirmation = document.getElementById("orderId");
-						// orderIdConfirmation.value = porderId; console.log("numéro de commande "+porderId); // numéro de commande
-						// localStorage.clear();
-						document.location.href="./confirmation.html"+"?orderId="+porderId;						
-						
-
+						// alert("orderId "+data.orderId);
+						let porderId = data.orderId; // paramètre à transmettre
+						document.location.href="./confirmation.html"+"?orderId="+porderId; //affichage de la page confirmation.html avec l'order id				
 					}			
 				})
 
@@ -342,7 +384,7 @@ function feedNewTag(newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,n
 	WtotalQty = WtotalQty+(parseInt(returnObjName.qtyA[readingIndex]));console.log("wtotalaty : "+WtotalQty);
 	WtotalAmount = WtotalAmount+((parseInt(returnObjName.qtyA[readingIndex]))*(parseInt(returnObjName.priceA[readingIndex])));console.log("wtotalamount : "+WtotalAmount);
 	
-	return newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,newImg,newH2,newP1,newP2,newP3,newP4,newInput,readingIndex;
+	// return newArticle,newDiv1,newDiv2,newDiv3,newDiv4,newDiv5,newDiv6,newImg,newH2,newP1,newP2,newP3,newP4,newInput,readingIndex;
 }
 	
 
@@ -393,7 +435,7 @@ function deleteElement(iA) // suppression dans les tableaux
 function addChildren(pParent,pChild) // ajout de la balise enfant à son parent
 {
 	pParent.appendChild(pChild);		
-	return pParent,pChild;
+	// return pParent,pChild;
 }
 
 function updClass(element,className) // ajout de la classe à l'élément
@@ -405,5 +447,5 @@ function updClass(element,className) // ajout de la classe à l'élément
 function sndErrMsg(sndId,sndMsg) // Affichage du msg d'erreur - identifiant de la balise et message à afficher
 {
 	document.getElementById(sndId).innerHTML = sndMsg;
-	return sndId,sndMsg;
+	// return sndId,sndMsg;
 }

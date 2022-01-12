@@ -63,6 +63,6 @@ function updClass(element,className)
 // ajout de la balise enfant à son parent
 function addChildren(pParent,pChild)
 	{
-		pParent.appendChild(pChild);			
-		return pParent,pChild;
+		pParent.appendChild(pChild);	
+		// return pParent,pChild; 		
 	}

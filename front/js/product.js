@@ -186,5 +186,5 @@ function feedNewTag(newImg,wTitle,wDescription,wPrice,data)
 	wTitle.innerHTML = data.name; console.log("wTitle.innerHTML =  " +wTitle.innerHTML);
 	wDescription.innerHTML = data.description; console.log("wDescription.innerHTML  =  " +wDescription.innerHTML );
 	wPrice.innerHTML = data.price; console.log("price  =  " +wPrice.innerHTML );
-	return newImg,wTitle,wDescription,wPrice,data;
+	// return newImg,wTitle,wDescription,wPrice,data;
 }
